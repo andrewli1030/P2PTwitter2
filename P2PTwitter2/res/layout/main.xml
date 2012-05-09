@@ -10,12 +10,14 @@
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/useStart"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start" />
+            android:ems="10" >
 
+            <requestFocus />
+        </EditText>
 
         <Button
             android:id="@+id/useJoin"

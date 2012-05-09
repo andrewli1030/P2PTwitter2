@@ -157,4 +157,6 @@ public class FriendStatusesActivity extends ListActivity implements Observer {
 		((ArrayAdapter<Status>) getListAdapter()).notifyDataSetChanged();
 	}
 
+	
+	
 }

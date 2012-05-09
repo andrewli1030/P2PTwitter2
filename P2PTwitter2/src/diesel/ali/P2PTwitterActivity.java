@@ -11,18 +11,24 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TabHost;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 public class P2PTwitterActivity extends TabActivity implements Observer {
     public static final User PUBLIC = new User("Public");
-	public static final User SENDER = new User("AndrewLi");
+	public static User SENDER = null;
 	/** Called when the activity is first created. */
 	
 	private ChatApplication mChatApplication = null;
     
 	private Button mJoinButton;
+	private EditText username;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,18 @@ public class P2PTwitterActivity extends TabActivity implements Observer {
 		mChatApplication.checkin();
 		mChatApplication.addObserver(this);
         
+		username = (EditText) findViewById(R.id.username);
+		username.setOnEditorActionListener(new OnEditorActionListener() {
+			
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				 if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
+					 SENDER = new User(v.getText().toString());
+				 }
+				return true;
+			}
+		});
+		
 		mJoinButton = (Button) findViewById(R.id.useJoin);
 		mJoinButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {

@@ -2,6 +2,8 @@ package diesel.ali;
 
 import java.util.Date;
 
+import org.alljoyn.bus.sample.chat.ChatApplication;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class SetStatusActivity extends Activity {
+public class SetStatusActivity extends Activity  {
 
 	private Button privateButton;
 	private Button publicButton;
@@ -56,16 +58,16 @@ public class SetStatusActivity extends Activity {
 												statusEditText.getEditableText().toString(),
 												(new Date()).getTime());
 
-				if (statusHistoryDataSource.insertStatus(publicStatus)) {
-					// TODO send status
-					
-					
-					
-					statusEditText.setText("");
-					startActivity(intent);
-				}
+				mChatApplication.newLocalUserMessage(publicStatus);
+				statusEditText.setText("");
+				startActivity(intent);
 
 			}
 		});
+		
+		mChatApplication = (ChatApplication) getApplication();
+		mChatApplication.checkin();
 	}
+	
+	private ChatApplication mChatApplication = null;
 }

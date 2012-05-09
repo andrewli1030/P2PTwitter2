@@ -71,8 +71,16 @@ public class PublicStatusesActivity extends ListActivity implements Observer {
 
 	@Override
 	protected void onPause() {
-		statusHistoryDataSource.close();
+		if (statusHistoryDataSource != null)
+			statusHistoryDataSource.close();
 		super.onPause();
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (statusHistoryDataSource != null)
+			statusHistoryDataSource.close();
+		super.onDestroy();
 	}
 
 	@Override

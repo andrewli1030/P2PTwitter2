@@ -191,5 +191,11 @@ public class StatusHistoryActivity extends Activity implements Observer {
 		datasource.close();
 		super.onPause();
 	}
+	
+	@Override
+	protected void onDestroy() {
+		datasource.close();
+		super.onDestroy();
+	}
 
 }
