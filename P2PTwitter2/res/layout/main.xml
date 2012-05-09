@@ -22,7 +22,7 @@
                 android:ems="10" 
                 android:layout_weight="1">
 				
-                <requestFocus />
+                
             </EditText>
 
             <Button

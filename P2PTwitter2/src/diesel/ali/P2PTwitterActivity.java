@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,16 +23,16 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 public class P2PTwitterActivity extends TabActivity implements Observer {
-    public static final User PUBLIC = new User("Public");
-    public static final User HISTORY = new User("History");
+	public static final User PUBLIC = new User("Public");
+	public static final User HISTORY = new User("History");
 	public static User SENDER = null;
 	/** Called when the activity is first created. */
-	
+
 	private ChatApplication mChatApplication = null;
-    
+
 	private Button mJoinButton;
 	private EditText username;
-	
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +68,16 @@ public class P2PTwitterActivity extends TabActivity implements Observer {
 		mChatApplication.addObserver(this);
         
 		username = (EditText) findViewById(R.id.username);
+		username.setText("Set Username then click Join");
+		username.setOnFocusChangeListener(new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				username.setText("");
+				username.setOnClickListener(null);				
+			}
+		});
+		
 		username.setOnEditorActionListener(new OnEditorActionListener() {
 			
 			@Override
@@ -103,16 +115,17 @@ public class P2PTwitterActivity extends TabActivity implements Observer {
 					mChatApplication.useSetChannelName("public");
 					mChatApplication.useJoinChannel();
 				}
-				
+				SENDER = new User(username.getEditableText().toString());
 				PublicStatusesActivity.synced = false;
 			}
 		});
 		
         
     }
+
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
