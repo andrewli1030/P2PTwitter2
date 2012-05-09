@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="org/alljoyn/bus/sample/chat/DialogBuilder.java|org/alljoyn/bus/sample/chat/HostActivity.java|org/alljoyn/bus/sample/chat/TabWidget.java|org/alljoyn/bus/sample/chat/UseActivity.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="libs/alljoyn.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
