@@ -65,8 +65,8 @@ public class StatusHistoryActivity extends Activity implements Observer {
 						recipient, statusText,
 						(new Date()).getTime());
 
-				//mChatApplication.newLocalUserMessage(status);
-				mChatApplication.newLocalUserMessage(statusText);
+				mChatApplication.newLocalUserMessage(status);
+				//mChatApplication.newLocalUserMessage(statusText);
 				
 				
 				editTextOut.setText("");
