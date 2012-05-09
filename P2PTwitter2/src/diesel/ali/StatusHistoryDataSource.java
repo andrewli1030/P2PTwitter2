@@ -55,9 +55,12 @@ public class StatusHistoryDataSource extends DataSource {
 	public List<Status> getAllFriendStatuses(String[] friendsUserNames) {
 		List<Status> statuses = new ArrayList<Status>();
 		Cursor cursor = database.query(DatabaseHelper.TABLE_STATUS_HISTORY,
-				null, /*DatabaseHelper.COL_RECIPIENT + inOperator(friendsUserNames) + " OR "
-						+*/ DatabaseHelper.COL_SENDER + inOperator(friendsUserNames), friendsUserNames,
-				null, null, null);
+				null, /*
+					 * DatabaseHelper.COL_RECIPIENT +
+					 * inOperator(friendsUserNames) + " OR " +
+					 */
+				DatabaseHelper.COL_SENDER + inOperator(friendsUserNames),
+				friendsUserNames, null, null, null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Status status = createStatus(cursor);
@@ -76,7 +79,7 @@ public class StatusHistoryDataSource extends DataSource {
 		in.append("?)");
 		return in.toString();
 	}
-	
+
 	private Status createStatus(Cursor cursor) {
 		User sender = new User(cursor.getString(cursor
 				.getColumnIndex(DatabaseHelper.COL_SENDER)));
@@ -87,6 +90,29 @@ public class StatusHistoryDataSource extends DataSource {
 		Long time = cursor.getLong(cursor
 				.getColumnIndex(DatabaseHelper.COL_TIME));
 		return new Status(sender, recipient, statusText, time);
-		
+
+	}
+
+	public Long getLatestTime() {
+		Cursor cursor = database.rawQuery("SELECT " + DatabaseHelper.COL_TIME
+				+ " FROM " + DatabaseHelper.TABLE_STATUS_HISTORY + " ORDER BY "
+				+ DatabaseHelper.COL_TIME + " DESC LIMIT 1", new String[] {});
+		if (!cursor.moveToNext()) {
+			return new Long(0);
+		} else
+			return cursor.getLong(0);
+	}
+
+	public ArrayList<Status> getHistoryPast(Long time) {
+		Cursor cursor = database.query(DatabaseHelper.TABLE_STATUS_HISTORY,
+				null, DatabaseHelper.COL_TIME + ">?",
+				new String[] { "" + time }, null, null, DatabaseHelper.COL_TIME + " DESC");
+		if (!cursor.moveToNext())
+			return null;
+		ArrayList<Status> statuses = new ArrayList<Status>();
+		statuses.add(createStatus(cursor));
+		while(cursor.moveToNext())
+			statuses.add(createStatus(cursor));
+		return statuses;
 	}
 }

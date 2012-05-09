@@ -22,6 +22,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class P2PTwitterActivity extends TabActivity implements Observer {
     public static final User PUBLIC = new User("Public");
+    public static final User HISTORY = new User("History");
 	public static User SENDER = null;
 	/** Called when the activity is first created. */
 	
@@ -102,6 +103,8 @@ public class P2PTwitterActivity extends TabActivity implements Observer {
 					mChatApplication.useSetChannelName("public");
 					mChatApplication.useJoinChannel();
 				}
+				
+				PublicStatusesActivity.synced = false;
 			}
 		});
 		

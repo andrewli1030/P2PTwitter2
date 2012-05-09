@@ -21,6 +21,8 @@ import org.alljoyn.bus.sample.chat.Observable;
 import org.alljoyn.bus.sample.chat.Observer;
 import org.alljoyn.bus.sample.chat.AllJoynService.UseChannelState;
 
+import diesel.ali.P2PTwitterActivity;
+import diesel.ali.PublicStatusesActivity;
 import diesel.ali.Status;
 import diesel.ali.StatusHistoryDataSource;
 import diesel.ali.User;
@@ -474,12 +476,11 @@ public class ChatApplication extends Application implements Observable {
 	 * the channel. Since the sessions that implement the channel don't "echo"
 	 * back to the source, we need to echo the message into our history.
 	 */
-	public synchronized void newLocalUserMessage(String message) {
-		addInboundItem("Me", message);
-		if (useGetChannelState() == AllJoynService.UseChannelState.JOINED) {
-			addOutboundItem(message);
-		}
-	}
+	/*
+	 * public synchronized void newLocalUserMessage(String message) {
+	 * addInboundItem("Me", message); if (useGetChannelState() ==
+	 * AllJoynService.UseChannelState.JOINED) { addOutboundItem(message); } }
+	 */
 
 	public synchronized void newLocalUserMessage(Status status) {
 		addInboundItem(status);
@@ -499,12 +500,58 @@ public class ChatApplication extends Application implements Observable {
 	 */
 	public synchronized void newRemoteUserMessage(String nickname,
 			String message) {
+		String[] statusArray = message.split(";");
+		User sender = new User(statusArray[0]);
+		User recipient = new User(statusArray[1]);
+		Long time = Long.parseLong(statusArray[3]);
+		StatusHistoryDataSource statusHistoryDataSource = new StatusHistoryDataSource(
+				this);
+		statusHistoryDataSource.open();
+
+		Status status = new Status(new User(statusArray[0]), recipient,
+				statusArray[2], time);
+
+		if (recipient.equals(P2PTwitterActivity.HISTORY)) {
+			List<Status> history = statusHistoryDataSource.getHistoryPast(time);
+			Status historyReturn = new Status(P2PTwitterActivity.HISTORY,
+					sender, "", new Long(0));
+			if (history == null) {
+				newLocalUserMessage(historyReturn);
+				return;
+			}
+			String statusMessage = "";
+			for (Status statuss : history) {
+				statusMessage += statuss.convertStatusToString(":") + "|";
+			}
+			statusMessage = statusMessage.substring(0,
+					statusMessage.length() - 1);
+			historyReturn.setStatusText(statusMessage);
+			newLocalUserMessage(historyReturn);
+			return;
+		} else if (sender.equals(P2PTwitterActivity.HISTORY)
+				&& recipient.equals(P2PTwitterActivity.SENDER)
+				&& !PublicStatusesActivity.synced) {
+			String multipleStatuses = status.getStatusText();
+			if (multipleStatuses == null || multipleStatuses.equals(""))
+				return;
+
+			String[] statuses = multipleStatuses.split("\\|");
+			for (String s : statuses) {
+				String[] singleStatus = s.split(":");
+				statusHistoryDataSource.insertStatus(new Status(new User(
+						singleStatus[0]), new User(singleStatus[1]),
+						singleStatus[2], Long.parseLong(singleStatus[3])));
+			}
+			PublicStatusesActivity.synced = true;
+			return;
+		}
 		addInboundItem(message);
 	}
 
-	public synchronized void newRemoteUserMessage(Status status) {
-		addInboundItem(status);
-	}
+	/*
+	 * public synchronized void newRemoteUserMessage(Status status) {
+	 * addInboundItem(status); }
+	 */
 
 	final int OUTBOUND_MAX = 5;
 
@@ -590,13 +637,16 @@ public class ChatApplication extends Application implements Observable {
 				statusArray[1]), statusArray[2], Long.parseLong(statusArray[3]));
 		addInboundItem(status);
 	}
-	
+
 	private void addInboundItem(Status status) {
-		StatusHistoryDataSource statusHistoryDataSource = new StatusHistoryDataSource(
-				this);
-		statusHistoryDataSource.open();
-		statusHistoryDataSource.insertStatus(status);
-		notifyObservers(HISTORY_CHANGED_EVENT);
+		if (!(status.getRecipient().equals(P2PTwitterActivity.HISTORY) || status
+				.getRecipient().equals(P2PTwitterActivity.HISTORY))) {
+			StatusHistoryDataSource statusHistoryDataSource = new StatusHistoryDataSource(
+					this);
+			statusHistoryDataSource.open();
+			statusHistoryDataSource.insertStatus(status);
+			notifyObservers(HISTORY_CHANGED_EVENT);
+		}
 	}
 
 	/**

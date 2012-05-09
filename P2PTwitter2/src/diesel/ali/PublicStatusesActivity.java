@@ -1,8 +1,10 @@
 package diesel.ali;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.alljoyn.bus.sample.chat.AllJoynService;
 import org.alljoyn.bus.sample.chat.ChatApplication;
 import org.alljoyn.bus.sample.chat.Observable;
 import org.alljoyn.bus.sample.chat.Observer;
@@ -136,7 +138,7 @@ public class PublicStatusesActivity extends ListActivity implements Observer {
 			case HANDLE_CHANNEL_STATE_CHANGED_EVENT: {
 				Log.i(TAG,
 						"mHandler.handleMessage(): HANDLE_CHANNEL_STATE_CHANGED_EVENT");
-				// updateChannelState();
+				updateChannelState();
 				break;
 			}
 			case HANDLE_ALLJOYN_ERROR_EVENT: {
@@ -152,12 +154,37 @@ public class PublicStatusesActivity extends ListActivity implements Observer {
 	};
 
 	private ChatApplication mChatApplication = null;
+	public static boolean synced;
 
 	private void updateHistory() {
 		statusHistoryDataSource.open();
 		setListAdapter(new ArrayAdapter<Status>(this, R.layout.status_item,
 				this.getStatuses()));
 		((ArrayAdapter<Status>) getListAdapter()).notifyDataSetChanged();
+	}
+
+	private void updateChannelState() {
+		Log.i(TAG, "updateHistory()");
+		AllJoynService.UseChannelState channelState = mChatApplication
+				.useGetChannelState();
+		String name = mChatApplication.useGetChannelName();
+		if (name == null) {
+			name = "Not set";
+		}
+
+		switch (channelState) {
+		case IDLE:
+			break;
+		case JOINED:
+			if (!synced) {
+				Status broadcastStatus = new Status(P2PTwitterActivity.SENDER,
+						P2PTwitterActivity.HISTORY, "",
+						statusHistoryDataSource.getLatestTime() + 1);
+				mChatApplication.newLocalUserMessage(broadcastStatus);
+			}
+			break;
+		}
+
 	}
 
 }

@@ -56,4 +56,11 @@ public class Status {
 	public void setTime(Long time) {
 		this.time = time;
 	}
+
+	public String convertStatusToString(String divider) {
+		String stringStatus = this.sender + divider + this.recipient + divider
+				+ this.statusText + divider + this.time;
+		return stringStatus;
+
+	}
 }
