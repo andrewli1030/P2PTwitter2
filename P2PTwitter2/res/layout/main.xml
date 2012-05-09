@@ -30,6 +30,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Join" />
+            
+            <Button
+                android:id="@+id/clearTables"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reset" />
         </LinearLayout>
 
         <TabWidget

@@ -544,6 +544,15 @@ public class ChatApplication extends Application implements Observable {
 			}
 			notifyObservers(HISTORY_CHANGED_EVENT);
 			return;
+		} else if (recipient.equals(P2PTwitterActivity.ONLINE)) {
+			Status ret = new Status(P2PTwitterActivity.ONLINE, sender, P2PTwitterActivity.SENDER.toString(), new Long(0));
+			newLocalUserMessage(ret);
+			return;
+		} else if (sender.equals(P2PTwitterActivity.ONLINE) && recipient.equals(P2PTwitterActivity.SENDER)) {
+			String username = status.getStatusText();
+			User u = new User(username);
+			
+			
 		}
 		addInboundItem(message);
 	}
@@ -639,8 +648,11 @@ public class ChatApplication extends Application implements Observable {
 	}
 
 	private void addInboundItem(Status status) {
-		if (!(status.getRecipient().equals(P2PTwitterActivity.HISTORY) || status
-				.getSender().equals(P2PTwitterActivity.HISTORY))) {
+		if (!(status.getRecipient().equals(P2PTwitterActivity.HISTORY) ||
+			  status.getSender().equals(P2PTwitterActivity.HISTORY) ||
+			  status.getRecipient().equals(P2PTwitterActivity.ONLINE) ||
+			  status.getSender().equals(P2PTwitterActivity.ONLINE) )
+			  ) {
 			StatusHistoryDataSource statusHistoryDataSource = new StatusHistoryDataSource(
 					this);
 			statusHistoryDataSource.open();

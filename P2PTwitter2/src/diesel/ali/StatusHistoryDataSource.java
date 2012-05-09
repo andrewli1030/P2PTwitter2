@@ -23,6 +23,13 @@ public class StatusHistoryDataSource extends DataSource {
 	public boolean insertStatus(User sender, User recipient, String statusText,
 			Long time) {
 		if (statusText.length() > 0) {
+			Cursor cursor = database.rawQuery("SELECT " + DatabaseHelper.COL_SENDER + ", " + DatabaseHelper.COL_RECIPIENT + ", " + DatabaseHelper.COL_STATUS + ", " + DatabaseHelper.COL_TIME + ", FROM " + DatabaseHelper.TABLE_STATUS_HISTORY +
+					" WHERE " + DatabaseHelper.COL_SENDER + "=? AND " + DatabaseHelper.COL_RECIPIENT + "=? AND " + DatabaseHelper.COL_STATUS + "=? AND " + DatabaseHelper.COL_TIME + "=?",
+					new String[] {sender.toString(), recipient.toString(), statusText, ""+time});
+			
+			if(cursor.moveToNext())
+				return true;
+			
 			ContentValues values = new ContentValues();
 			values.put(DatabaseHelper.COL_SENDER, sender.getUsername());
 			values.put(DatabaseHelper.COL_RECIPIENT, recipient.getUsername());
@@ -32,6 +39,12 @@ public class StatusHistoryDataSource extends DataSource {
 			return true;
 		}
 		return false;
+	}
+	
+	public void clearTables()
+	{
+		database.execSQL("DELETE FROM "+DatabaseHelper.TABLE_STATUS_HISTORY);
+		database.execSQL("DELETE FROM "+DatabaseHelper.TABLE_USERS);
 	}
 
 	public List<Status> getStatusHistory(User user) {

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TabHost;
@@ -25,18 +26,24 @@ import android.widget.TextView.OnEditorActionListener;
 public class P2PTwitterActivity extends TabActivity implements Observer {
 	public static final User PUBLIC = new User("Public");
 	public static final User HISTORY = new User("History");
+	public static final User ONLINE = new User("Online");
 	public static User SENDER = null;
 	/** Called when the activity is first created. */
 
 	private ChatApplication mChatApplication = null;
 
 	private Button mJoinButton;
+	private Button mClearTables;
 	private EditText username;
+	private StatusHistoryDataSource statusHistoryDataSource;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        statusHistoryDataSource = new StatusHistoryDataSource(this);
+		statusHistoryDataSource.open();
         
         TabHost tabHost = getTabHost();
 		TabHost.TabSpec spec;
@@ -120,12 +127,38 @@ public class P2PTwitterActivity extends TabActivity implements Observer {
 			}
 		});
 		
-        
+        mClearTables = (Button) findViewById(R.id.clearTables);
+        mClearTables.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				statusHistoryDataSource.clearTables();
+			}
+		});
     }
 
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	@Override
+	protected void onResume() {
+		statusHistoryDataSource.open();
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		if (statusHistoryDataSource != null)
+			statusHistoryDataSource.close();
+		super.onPause();
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (statusHistoryDataSource != null)
+			statusHistoryDataSource.close();
+		super.onDestroy();
 	}
 }
