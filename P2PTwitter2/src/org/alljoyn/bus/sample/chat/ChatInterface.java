@@ -36,6 +36,6 @@ public interface ChatInterface {
     @BusSignal
     public void Chat(String str) throws BusException;
     
-    @BusSignal
-    public void Chat(Status status) throws BusException;
+   /* @BusSignal
+    public void Chat(Status status) throws BusException;*/
 }
