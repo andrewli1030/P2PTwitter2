@@ -65,7 +65,7 @@ public class FriendsListActivity extends ListActivity {
 				if (extras != null && extras.getString("Status") != null) {
 					intent.putExtra("Status", extras.getString("Status"));
 					intent.putExtra("Private", true);
-					String statusText = extras.getString("Status");
+					//String statusText = extras.getString("Status");
 					/*statusHistoryDataSource.insertStatus(
 							P2PTwitterActivity.SENDER, recipient, statusText,
 							(new Date()).getTime());*/

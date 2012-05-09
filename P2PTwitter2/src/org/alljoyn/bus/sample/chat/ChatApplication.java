@@ -562,7 +562,7 @@ public class ChatApplication extends Application implements Observable {
 
 			UsersDataSource usersDataSource = new UsersDataSource(this);
 			usersDataSource.open();
-			if (usersDataSource.isFriend(u)) {
+			if (usersDataSource.isFriend(u) && !FriendsOnlineActivity.FRIENDS.contains(u)) {
 				FriendsOnlineActivity.FRIENDS.add(u);
 			}
 			usersDataSource.close();
