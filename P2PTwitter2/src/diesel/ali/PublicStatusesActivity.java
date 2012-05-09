@@ -161,6 +161,7 @@ public class PublicStatusesActivity extends ListActivity implements Observer {
 		setListAdapter(new ArrayAdapter<Status>(this, R.layout.status_item,
 				this.getStatuses()));
 		((ArrayAdapter<Status>) getListAdapter()).notifyDataSetChanged();
+		statusHistoryDataSource.close();
 	}
 
 	private void updateChannelState() {

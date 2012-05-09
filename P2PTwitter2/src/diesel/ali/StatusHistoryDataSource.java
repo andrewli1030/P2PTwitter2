@@ -23,7 +23,9 @@ public class StatusHistoryDataSource extends DataSource {
 	public boolean insertStatus(User sender, User recipient, String statusText,
 			Long time) {
 		if (statusText.length() > 0) {
-			Cursor cursor = database.rawQuery("SELECT " + DatabaseHelper.COL_SENDER + ", " + DatabaseHelper.COL_RECIPIENT + ", " + DatabaseHelper.COL_STATUS + ", " + DatabaseHelper.COL_TIME + ", FROM " + DatabaseHelper.TABLE_STATUS_HISTORY +
+//			String q = "SELECT " + DatabaseHelper.COL_SENDER + ", " + DatabaseHelper.COL_RECIPIENT + ", " + DatabaseHelper.COL_STATUS + ", " + DatabaseHelper.COL_TIME + " FROM " + DatabaseHelper.TABLE_STATUS_HISTORY +
+//					" WHERE " + DatabaseHelper.COL_SENDER + "=? AND " + DatabaseHelper.COL_RECIPIENT + "=? AND " + DatabaseHelper.COL_STATUS + "=? AND " + DatabaseHelper.COL_TIME + "=?";
+			Cursor cursor = database.rawQuery("SELECT " + DatabaseHelper.COL_SENDER + ", " + DatabaseHelper.COL_RECIPIENT + ", " + DatabaseHelper.COL_STATUS + ", " + DatabaseHelper.COL_TIME + " FROM " + DatabaseHelper.TABLE_STATUS_HISTORY +
 					" WHERE " + DatabaseHelper.COL_SENDER + "=? AND " + DatabaseHelper.COL_RECIPIENT + "=? AND " + DatabaseHelper.COL_STATUS + "=? AND " + DatabaseHelper.COL_TIME + "=?",
 					new String[] {sender.toString(), recipient.toString(), statusText, ""+time});
 			
@@ -53,7 +55,7 @@ public class StatusHistoryDataSource extends DataSource {
 				null, DatabaseHelper.COL_RECIPIENT + " =?" + " OR "
 						+ DatabaseHelper.COL_SENDER + " =?", new String[] {
 						user.getUsername(), user.getUsername() }, null, null,
-				null);
+				DatabaseHelper.COL_TIME + " ASC");
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {

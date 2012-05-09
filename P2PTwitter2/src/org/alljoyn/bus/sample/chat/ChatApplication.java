@@ -21,6 +21,7 @@ import org.alljoyn.bus.sample.chat.Observable;
 import org.alljoyn.bus.sample.chat.Observer;
 import org.alljoyn.bus.sample.chat.AllJoynService.UseChannelState;
 
+import diesel.ali.FriendsOnlineActivity;
 import diesel.ali.P2PTwitterActivity;
 import diesel.ali.PublicStatusesActivity;
 import diesel.ali.Status;
@@ -527,10 +528,11 @@ public class ChatApplication extends Application implements Observable {
 					statusMessage.length() - 1);
 			historyReturn.setStatusText(statusMessage);
 			newLocalUserMessage(historyReturn);
+			statusHistoryDataSource.close();
 			return;
 		} else if (sender.equals(P2PTwitterActivity.HISTORY)
-				&& recipient.equals(P2PTwitterActivity.SENDER)
-				&& !PublicStatusesActivity.synced) {
+				&& recipient.equals(P2PTwitterActivity.SENDER)){
+//				&& !PublicStatusesActivity.synced) {
 			String multipleStatuses = status.getStatusText();
 			if (multipleStatuses == null || multipleStatuses.equals(""))
 				return;
@@ -543,17 +545,23 @@ public class ChatApplication extends Application implements Observable {
 						singleStatus[2], Long.parseLong(singleStatus[3])));
 			}
 			notifyObservers(HISTORY_CHANGED_EVENT);
+			PublicStatusesActivity.synced = true;
+			statusHistoryDataSource.close();
 			return;
 		} else if (recipient.equals(P2PTwitterActivity.ONLINE)) {
 			Status ret = new Status(P2PTwitterActivity.ONLINE, sender, P2PTwitterActivity.SENDER.toString(), new Long(0));
 			newLocalUserMessage(ret);
+			statusHistoryDataSource.close();
 			return;
 		} else if (sender.equals(P2PTwitterActivity.ONLINE) && recipient.equals(P2PTwitterActivity.SENDER)) {
 			String username = status.getStatusText();
 			User u = new User(username);
 			
-			
+			FriendsOnlineActivity.FRIENDS.add(u);
+			statusHistoryDataSource.close();
+			return;
 		}
+		statusHistoryDataSource.close();
 		addInboundItem(message);
 	}
 

@@ -1,5 +1,9 @@
 package diesel.ali;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Status {
 
 	private User recipient;
@@ -38,7 +42,9 @@ public class Status {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return this.sender.toString() + ": " + this.statusText;
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+		
+		return "["+dateFormat.format(new Date(this.time))+"] ("+this.sender.toString() + "): " + this.statusText;
 	}
 
 	public User getRecipient() {

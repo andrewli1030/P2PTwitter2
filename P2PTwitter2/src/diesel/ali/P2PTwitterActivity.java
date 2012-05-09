@@ -132,6 +132,8 @@ public class P2PTwitterActivity extends TabActivity implements Observer {
 			@Override
 			public void onClick(View v) {
 				statusHistoryDataSource.clearTables();
+				
+				//TODO refresh status list
 			}
 		});
     }
