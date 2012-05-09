@@ -10,20 +10,28 @@
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:ems="10" >
+            android:orientation="horizontal" >
 
-            <requestFocus />
-        </EditText>
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10" 
+                android:layout_weight="1">
+				
+                <requestFocus />
+            </EditText>
 
-        <Button
-            android:id="@+id/useJoin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Join" />
+            <Button
+                android:id="@+id/useJoin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Join" />
+        </LinearLayout>
+
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="fill_parent"

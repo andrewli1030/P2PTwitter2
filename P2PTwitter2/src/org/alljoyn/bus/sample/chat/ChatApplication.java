@@ -542,7 +542,7 @@ public class ChatApplication extends Application implements Observable {
 						singleStatus[0]), new User(singleStatus[1]),
 						singleStatus[2], Long.parseLong(singleStatus[3])));
 			}
-			PublicStatusesActivity.synced = true;
+			notifyObservers(HISTORY_CHANGED_EVENT);
 			return;
 		}
 		addInboundItem(message);
@@ -640,7 +640,7 @@ public class ChatApplication extends Application implements Observable {
 
 	private void addInboundItem(Status status) {
 		if (!(status.getRecipient().equals(P2PTwitterActivity.HISTORY) || status
-				.getRecipient().equals(P2PTwitterActivity.HISTORY))) {
+				.getSender().equals(P2PTwitterActivity.HISTORY))) {
 			StatusHistoryDataSource statusHistoryDataSource = new StatusHistoryDataSource(
 					this);
 			statusHistoryDataSource.open();
