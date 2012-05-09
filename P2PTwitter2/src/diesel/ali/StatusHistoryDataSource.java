@@ -21,7 +21,7 @@ public class StatusHistoryDataSource extends DataSource {
 	}
 
 	public boolean insertStatus(User sender, User recipient, String statusText,
-			Integer time) {
+			Long time) {
 		if (statusText.length() > 0) {
 			ContentValues values = new ContentValues();
 			values.put(DatabaseHelper.COL_SENDER, sender.getUsername());
@@ -84,7 +84,7 @@ public class StatusHistoryDataSource extends DataSource {
 				.getColumnIndex(DatabaseHelper.COL_RECIPIENT)));
 		String statusText = cursor.getString(cursor
 				.getColumnIndex(DatabaseHelper.COL_STATUS));
-		Integer time = cursor.getInt(cursor
+		Long time = cursor.getLong(cursor
 				.getColumnIndex(DatabaseHelper.COL_TIME));
 		return new Status(sender, recipient, statusText, time);
 		

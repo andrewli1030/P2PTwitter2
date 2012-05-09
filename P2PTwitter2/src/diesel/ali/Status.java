@@ -5,14 +5,14 @@ public class Status {
 	private User recipient;
 	private User sender;
 	private String statusText;
-	private Integer time;
+	private Long time;
 
 	/*
 	 * public Status(User sender, String statusText) { this.setSender(sender);
 	 * this.setStatusText(statusText); }
 	 */
 
-	public Status(User sender, User recipient, String statusText, Integer time) {
+	public Status(User sender, User recipient, String statusText, Long time) {
 		this.setSender(sender);
 		this.setRecipient(recipient);
 		this.setStatusText(statusText);
@@ -49,11 +49,11 @@ public class Status {
 		this.recipient = recipient;
 	}
 
-	public Integer getTime() {
+	public Long getTime() {
 		return time;
 	}
 
-	public void setTime(Integer time) {
+	public void setTime(Long time) {
 		this.time = time;
 	}
 }

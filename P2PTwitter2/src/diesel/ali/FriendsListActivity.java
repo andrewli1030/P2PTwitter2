@@ -1,6 +1,7 @@
 package diesel.ali;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -61,7 +62,7 @@ public class FriendsListActivity extends ListActivity {
 					String statusText = extras.getString("Status");
 					statusHistoryDataSource.insertStatus(
 							P2PTwitterActivity.SENDER, recipient, statusText,
-							(int) System.currentTimeMillis() / 1000);
+							(new Date()).getTime());
 					// TODO send status
 				}
 				Intent intent = new Intent(view.getContext(),

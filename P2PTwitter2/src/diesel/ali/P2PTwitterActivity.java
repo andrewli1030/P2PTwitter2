@@ -66,12 +66,7 @@ public class P2PTwitterActivity extends TabActivity implements Observer {
 				Log.i("TAGP", "Looking for public channel");
 				for (Iterator<String> i = ch.iterator(); i.hasNext();) {
 					String channelName = i.next();
-					Log.i("TAGP",
-							"Found "
-									+ channelName
-									+ " and t/f: "
-									+ "org.alljoyn.bus.samples.chat.public"
-											.equals(channelName));
+					Log.i("TAGP", "Found "+channelName+" and t/f: "+"org.alljoyn.bus.samples.chat.public".equals(channelName));
 					if (channelName
 							.equals("org.alljoyn.bus.samples.chat.public")) {
 						Log.i("TAGP", "Found public channel");

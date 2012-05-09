@@ -1,5 +1,7 @@
 package diesel.ali;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,9 +52,9 @@ public class SetStatusActivity extends Activity {
 						PublicStatusesActivity.class);
 
 				Status publicStatus = new Status(P2PTwitterActivity.SENDER,
-						P2PTwitterActivity.PUBLIC, statusEditText
-								.getEditableText().toString(), (int) System
-								.currentTimeMillis() / 1000);
+												P2PTwitterActivity.PUBLIC,
+												statusEditText.getEditableText().toString(),
+												(new Date()).getTime());
 
 				if (statusHistoryDataSource.insertStatus(publicStatus)) {
 					// TODO send status

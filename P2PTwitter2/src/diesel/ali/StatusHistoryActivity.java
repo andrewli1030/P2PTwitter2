@@ -1,6 +1,7 @@
 package diesel.ali;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.alljoyn.bus.sample.chat.ChatApplication;
@@ -62,7 +63,7 @@ public class StatusHistoryActivity extends Activity implements Observer {
 				String statusText = editTextOut.getText().toString();
 				Status status = new Status(P2PTwitterActivity.SENDER,
 						recipient, statusText,
-						(int) System.currentTimeMillis() / 1000);
+						(new Date()).getTime());
 
 				//mChatApplication.newLocalUserMessage(status);
 				mChatApplication.newLocalUserMessage(statusText);
