@@ -21,6 +21,9 @@ import org.alljoyn.bus.sample.chat.Observable;
 import org.alljoyn.bus.sample.chat.Observer;
 import org.alljoyn.bus.sample.chat.AllJoynService.UseChannelState;
 
+import diesel.ali.Status;
+import diesel.ali.StatusHistoryDataSource;
+
 import android.app.Application;
 
 import android.content.ComponentName;
@@ -480,6 +483,13 @@ public class ChatApplication extends Application implements Observable {
 		}
 	}
 	
+	public synchronized void newLocalUserMessage(Status status) {
+		addInboundItem(status);
+		if (useGetChannelState() == AllJoynService.UseChannelState.JOINED) {
+			addOutboundItem(status);
+		}
+	}
+	
 	/**
 	 * Whenever a user types a message into the channel, we expect the AllJoyn 
 	 * Service local to that user to send the message to everyone participating
@@ -491,6 +501,10 @@ public class ChatApplication extends Application implements Observable {
 	 */
 	public synchronized void newRemoteUserMessage(String nickname, String message) {
 		addInboundItem(nickname, message);
+	}
+	
+	public synchronized void newRemoteUserMessage(Status status) {
+		addInboundItem(status);
 	}
 
 	final int OUTBOUND_MAX = 5;
@@ -506,6 +520,7 @@ public class ChatApplication extends Application implements Observable {
 	 * by our local user and are designed for the outside world.
 	 */
 	private List<String> mOutbound = new ArrayList<String>();
+	private List<Status> mOutboundStatuses = new ArrayList<Status>();
 	
 	/**
 	 * Whenever the local user types a message for distribution to the channel
@@ -523,6 +538,11 @@ public class ChatApplication extends Application implements Observable {
 		notifyObservers(OUTBOUND_CHANGED_EVENT);
 	}
 	
+	private void addOutboundItem(Status status) {
+		mOutboundStatuses.add(status);
+		notifyObservers(OUTBOUND_CHANGED_EVENT);
+	}
+	
 	/**
 	 * Whenever the local user types a message for distribution to the channel
 	 * it is queued to a list of outbound messages.  The AllJoyn Service is
@@ -534,6 +554,14 @@ public class ChatApplication extends Application implements Observable {
 			return null;
 		} else {
 			return mOutbound.remove(0);
+		}
+	}
+	
+	public synchronized Status getOutboundStatus() {
+		if (mOutboundStatuses.isEmpty()) {
+			return null;
+		} else {
+			return mOutboundStatuses.remove(0);
 		}
 	}
 	
@@ -555,6 +583,13 @@ public class ChatApplication extends Application implements Observable {
 	 */
 	private void addInboundItem(String nickname, String message) {
 		addHistoryItem(nickname, message);
+	}
+	
+	private void addInboundItem(Status status) {
+		StatusHistoryDataSource statusHistoryDataSource = new StatusHistoryDataSource(this);
+		statusHistoryDataSource.open();
+		statusHistoryDataSource.insertStatus(status);
+		notifyObservers(HISTORY_CHANGED_EVENT);
 	}
 	
 	/**
