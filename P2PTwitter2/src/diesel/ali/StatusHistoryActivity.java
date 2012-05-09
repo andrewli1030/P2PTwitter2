@@ -52,6 +52,18 @@ public class StatusHistoryActivity extends Activity implements Observer {
 			buttonSend.setVisibility(View.GONE);
 		}
 
+		mChatApplication = (ChatApplication) getApplication();
+		mChatApplication.checkin();
+		mChatApplication.addObserver(this);
+
+		
+		if (getIntent().getExtras().getBoolean("Private")) {
+			String statusText = getIntent().getExtras().getString("Status");
+			Status status = new Status(P2PTwitterActivity.SENDER,
+					recipient, statusText, (new Date()).getTime());
+			mChatApplication.newLocalUserMessage(status);
+		}
+		
 		STATUSES = datasource.getStatusHistory(recipient);
 		statusHistory.setAdapter(new ArrayAdapter<Status>(this,
 				R.layout.status_item, STATUSES));
@@ -79,10 +91,7 @@ public class StatusHistoryActivity extends Activity implements Observer {
 			}
 		});
 
-		mChatApplication = (ChatApplication) getApplication();
-		mChatApplication.checkin();
-		mChatApplication.addObserver(this);
-
+		
 	}
 
 	@Override

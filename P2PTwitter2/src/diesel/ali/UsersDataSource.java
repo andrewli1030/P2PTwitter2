@@ -1,7 +1,9 @@
 package diesel.ali;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -55,6 +57,29 @@ public class UsersDataSource extends DataSource {
 		}
 		cursor.close();
 		return usernames;
+	}
+
+	/*
+	 * public Set<User> getAllUsernamesInSet() { Set<User >usernames = new
+	 * HashSet<User>(); Cursor cursor =
+	 * database.query(DatabaseHelper.TABLE_USERS, new String[] {
+	 * DatabaseHelper.COL_USERNAME }, null, null, null, null, null);
+	 * cursor.moveToFirst(); while (!cursor.isAfterLast()) { User user = new
+	 * User(cursor.getString(cursor
+	 * .getColumnIndex(DatabaseHelper.COL_USERNAME))); usernames.add(user);
+	 * cursor.moveToNext();
+	 * 
+	 * } cursor.close(); return usernames; }
+	 */
+
+	public boolean isFriend(User user) {
+		boolean ret;
+		Cursor cursor = database.query(DatabaseHelper.TABLE_USERS, null,
+				DatabaseHelper.COL_USERNAME + " =?",
+				new String[] { user.getUsername() }, null, null, null);
+		ret = cursor.getCount() > 0;
+		cursor.close();
+		return ret;
 	}
 
 	public int getCount() {

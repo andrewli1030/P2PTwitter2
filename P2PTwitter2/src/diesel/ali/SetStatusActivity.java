@@ -41,7 +41,10 @@ public class SetStatusActivity extends Activity  {
 						FriendsListActivity.class);
 				intent.putExtra("Status", statusEditText.getEditableText()
 						.toString());
+				statusEditText.setText("");
 				startActivity(intent);
+				
+				
 			}
 		});
 

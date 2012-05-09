@@ -58,15 +58,19 @@ public class FriendsListActivity extends ListActivity {
 					int position, long id) {
 				Bundle extras = getIntent().getExtras();
 				User recipient = (User) lv.getItemAtPosition(position);
-				if (extras != null && extras.getString("Status") != null) {
-					String statusText = extras.getString("Status");
-					statusHistoryDataSource.insertStatus(
-							P2PTwitterActivity.SENDER, recipient, statusText,
-							(new Date()).getTime());
-					// TODO send status
-				}
+				
 				Intent intent = new Intent(view.getContext(),
 						StatusHistoryActivity.class);
+				
+				if (extras != null && extras.getString("Status") != null) {
+					intent.putExtra("Status", extras.getString("Status"));
+					intent.putExtra("Private", true);
+					String statusText = extras.getString("Status");
+					/*statusHistoryDataSource.insertStatus(
+							P2PTwitterActivity.SENDER, recipient, statusText,
+							(new Date()).getTime());*/
+					// TODO send status
+				}
 				intent.putExtra("Recipient", recipient.getUsername());
 				startActivity(intent);
 

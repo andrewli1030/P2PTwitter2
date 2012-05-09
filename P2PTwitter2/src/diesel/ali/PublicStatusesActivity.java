@@ -178,10 +178,12 @@ public class PublicStatusesActivity extends ListActivity implements Observer {
 			break;
 		case JOINED:
 			if (!synced) {
+				statusHistoryDataSource.open();
 				Status broadcastStatus = new Status(P2PTwitterActivity.SENDER,
 						P2PTwitterActivity.HISTORY, "",
 						statusHistoryDataSource.getLatestTime() + 1);
 				mChatApplication.newLocalUserMessage(broadcastStatus);
+				statusHistoryDataSource.close();
 			}
 			break;
 		}

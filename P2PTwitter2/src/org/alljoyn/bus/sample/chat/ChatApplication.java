@@ -27,6 +27,7 @@ import diesel.ali.PublicStatusesActivity;
 import diesel.ali.Status;
 import diesel.ali.StatusHistoryDataSource;
 import diesel.ali.User;
+import diesel.ali.UsersDataSource;
 
 import android.app.Application;
 
@@ -531,8 +532,8 @@ public class ChatApplication extends Application implements Observable {
 			statusHistoryDataSource.close();
 			return;
 		} else if (sender.equals(P2PTwitterActivity.HISTORY)
-				&& recipient.equals(P2PTwitterActivity.SENDER)){
-//				&& !PublicStatusesActivity.synced) {
+				&& recipient.equals(P2PTwitterActivity.SENDER)) {
+			// && !PublicStatusesActivity.synced) {
 			String multipleStatuses = status.getStatusText();
 			if (multipleStatuses == null || multipleStatuses.equals(""))
 				return;
@@ -549,21 +550,31 @@ public class ChatApplication extends Application implements Observable {
 			statusHistoryDataSource.close();
 			return;
 		} else if (recipient.equals(P2PTwitterActivity.ONLINE)) {
-			Status ret = new Status(P2PTwitterActivity.ONLINE, sender, P2PTwitterActivity.SENDER.toString(), new Long(0));
+			Status ret = new Status(P2PTwitterActivity.ONLINE, sender,
+					P2PTwitterActivity.SENDER.toString(), new Long(0));
 			newLocalUserMessage(ret);
 			statusHistoryDataSource.close();
 			return;
-		} else if (sender.equals(P2PTwitterActivity.ONLINE) && recipient.equals(P2PTwitterActivity.SENDER)) {
+		} else if (sender.equals(P2PTwitterActivity.ONLINE)
+				&& recipient.equals(P2PTwitterActivity.SENDER)) {
 			String username = status.getStatusText();
 			User u = new User(username);
-			
-			FriendsOnlineActivity.FRIENDS.add(u);
+
+			UsersDataSource usersDataSource = new UsersDataSource(this);
+			usersDataSource.open();
+			if (usersDataSource.isFriend(u)) {
+				FriendsOnlineActivity.FRIENDS.add(u);
+			}
+			usersDataSource.close();
 			statusHistoryDataSource.close();
+			notifyObservers(ONLINE_CHANGED_EVENT);
 			return;
 		}
 		statusHistoryDataSource.close();
 		addInboundItem(message);
 	}
+
+	public static final String ONLINE_CHANGED_EVENT = "ONLINE_CHANGED_EVENT";
 
 	/*
 	 * public synchronized void newRemoteUserMessage(Status status) {
@@ -594,13 +605,11 @@ public class ChatApplication extends Application implements Observable {
 	 * eventually respond by calling back in here to get items off of the queue
 	 * and send them down the session corresponding to the channel.
 	 */
-	private void addOutboundItem(String message) {
-		if (mOutbound.size() == OUTBOUND_MAX) {
-			mOutbound.remove(0);
-		}
-		mOutbound.add(message);
-		notifyObservers(OUTBOUND_CHANGED_EVENT);
-	}
+	/*
+	 * private void addOutboundItem(String message) { if (mOutbound.size() ==
+	 * OUTBOUND_MAX) { mOutbound.remove(0); } mOutbound.add(message);
+	 * notifyObservers(OUTBOUND_CHANGED_EVENT); }
+	 */
 
 	private void addOutboundItem(Status status) {
 		String statusText = status.getSender() + ";" + status.getRecipient()
@@ -656,11 +665,10 @@ public class ChatApplication extends Application implements Observable {
 	}
 
 	private void addInboundItem(Status status) {
-		if (!(status.getRecipient().equals(P2PTwitterActivity.HISTORY) ||
-			  status.getSender().equals(P2PTwitterActivity.HISTORY) ||
-			  status.getRecipient().equals(P2PTwitterActivity.ONLINE) ||
-			  status.getSender().equals(P2PTwitterActivity.ONLINE) )
-			  ) {
+		if (!(status.getRecipient().equals(P2PTwitterActivity.HISTORY)
+				|| status.getSender().equals(P2PTwitterActivity.HISTORY)
+				|| status.getRecipient().equals(P2PTwitterActivity.ONLINE) || status
+				.getSender().equals(P2PTwitterActivity.ONLINE))) {
 			StatusHistoryDataSource statusHistoryDataSource = new StatusHistoryDataSource(
 					this);
 			statusHistoryDataSource.open();

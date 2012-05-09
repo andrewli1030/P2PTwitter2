@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -27,7 +28,7 @@ public class P2PTwitterActivity extends TabActivity implements Observer {
 	public static final User PUBLIC = new User("Public");
 	public static final User HISTORY = new User("History");
 	public static final User ONLINE = new User("Online");
-	public static User SENDER = null;
+	public static User SENDER = new User("Default");
 	/** Called when the activity is first created. */
 
 	private ChatApplication mChatApplication = null;
@@ -37,6 +38,7 @@ public class P2PTwitterActivity extends TabActivity implements Observer {
 	private EditText username;
 	private StatusHistoryDataSource statusHistoryDataSource;
 
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
