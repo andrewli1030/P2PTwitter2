@@ -62,13 +62,11 @@ public class StatusHistoryActivity extends Activity implements Observer {
 			public void onClick(View v) {
 				String statusText = editTextOut.getText().toString();
 				Status status = new Status(P2PTwitterActivity.SENDER,
-						recipient, statusText,
-						(new Date()).getTime());
+						recipient, statusText, (new Date()).getTime());
 
 				mChatApplication.newLocalUserMessage(status);
-				//mChatApplication.newLocalUserMessage(statusText);
-				
-				
+				// mChatApplication.newLocalUserMessage(statusText);
+
 				editTextOut.setText("");
 
 				/*
@@ -180,6 +178,18 @@ public class StatusHistoryActivity extends Activity implements Observer {
 				R.layout.status_item, STATUSES));
 		((ArrayAdapter<Status>) statusHistory.getAdapter())
 				.notifyDataSetChanged();
+	}
+
+	@Override
+	protected void onResume() {
+		datasource.open();
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		datasource.close();
+		super.onPause();
 	}
 
 }
