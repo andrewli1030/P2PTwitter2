@@ -545,7 +545,8 @@ public class AllJoynService extends Service implements Observer {
 		        doLeaveSession();
 		        break;
 	        case SEND_MESSAGES:
-		        doSendMessages();
+		        //doSendMessages();
+		        doSendStatuses();
 		        break;
 	        case EXIT:
                 getLooper().quit();
