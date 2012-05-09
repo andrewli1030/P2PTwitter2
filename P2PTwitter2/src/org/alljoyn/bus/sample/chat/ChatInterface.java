@@ -23,6 +23,8 @@ import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.annotation.BusInterface;
 import org.alljoyn.bus.annotation.BusSignal;
 
+import diesel.ali.Status;
+
 @BusInterface (name = "org.alljoyn.bus.samples.chat")
 public interface ChatInterface {
     /*
@@ -33,4 +35,7 @@ public interface ChatInterface {
      */
     @BusSignal
     public void Chat(String str) throws BusException;
+    
+    @BusSignal
+    public void Chat(Status status) throws BusException;
 }
